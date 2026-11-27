@@ -1,0 +1,533 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOKO.KITA - Toko Serba Ada</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7f6;
+  color: #222;
+}
+
+header {
+  background: #176b55;
+  color: white;
+  padding: 20px 7%;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.logo span {
+  color: #ffd166;
+}
+
+.cart-button {
+  background: #ffd166;
+  color: #222;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.hero {
+  background: linear-gradient(135deg, #176b55, #3da889);
+  color: white;
+  padding: 55px 7%;
+}
+
+.hero h1 {
+  font-size: 38px;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  font-size: 17px;
+}
+
+.container {
+  padding: 30px 7%;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.search-box input,
+.search-box select {
+  padding: 13px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.search-box input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px #00000010;
+  transition: 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+}
+
+.product-image {
+  height: 150px;
+  background: #e8f4ef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 65px;
+}
+
+.product-info {
+  padding: 15px;
+}
+
+.product-info h3 {
+  margin-bottom: 8px;
+}
+
+.category {
+  color: #777;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.price {
+  color: #176b55;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.stock {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.add-button {
+  width: 100%;
+  padding: 11px;
+  border: none;
+  border-radius: 7px;
+  background: #176b55;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.add-button:hover {
+  background: #105440;
+}
+
+.cart-section {
+  background: white;
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 12px;
+  display: none;
+}
+
+.cart-section h2 {
+  margin-bottom: 15px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+  flex-wrap: wrap;
+}
+
+.cart-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-controls button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.remove-button {
+  color: #d33;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.total {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.checkout-button {
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 13px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+}
+
+.empty-message {
+  color: #777;
+  padding: 15px 0;
+}
+
+footer {
+  background: #176b55;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+}
+
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 28px;
+  }
+
+  .container {
+    padding: 25px 5%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="logo">TOKO<span>.</span>KITA</div>
+
+    <button class="cart-button" onclick="toggleCart()">
+      🛒 Keranjang (<span id="cart-count">0</span>)
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Belanja Mudah, Semua Ada!</h1>
+  <p>Temukan makanan, minuman, elektronik, dan kebutuhan lainnya.</p>
+</section>
+
+<main class="container">
+
+  <div class="search-box">
+    <input
+      type="text"
+      id="search"
+      placeholder="Cari nama produk..."
+      oninput="displayProducts()"
+    >
+
+    <select id="category" onchange="displayProducts()">
+      <option value="Semua">Semua Kategori</option>
+      <option value="Makanan">Makanan</option>
+      <option value="Minuman">Minuman</option>
+      <option value="Elektronik">Elektronik</option>
+      <option value="Asesoris">Asesoris</option>
+    </select>
+  </div>
+
+  <h2 style="margin-bottom:20px;">Produk Kami</h2>
+
+  <div class="products" id="products"></div>
+
+  <section class="cart-section" id="cart-section">
+    <h2>Keranjang Belanja</h2>
+
+    <div id="cart-items"></div>
+
+    <div class="total" id="cart-total">Total: Rp0</div>
+
+    <button class="checkout-button" onclick="checkout()">
+      Pesan melalui WhatsApp
+    </button>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 TOKO.KITA - Toko Serba Ada</p>
+</footer>
+
+<!-- Logika JavaScript -->
+<script>
+
+// 1. URL Apps Script dan nomor WhatsApp Admin
+const API_URL = "https://script.google.com/macros/s/AKfycbzIp7rd-lt4AXjNWvUqL50Tn5FwyO0zQxT8FCEJPmoEWcKol0FWJQRd5STnRSiQ4_lg/exec";
+const WA_ADMIN = "6283142121860";
+
+// API_URL hanya disimpan sebagai alamat API.
+// Tidak digunakan untuk mengalihkan halaman toko.
+
+// 2. Daftar produk
+const products = [
+  {id:1, name:"Hamburger", category:"Makanan", price:300000, stock:40, emoji:"🍔"},
+  {id:2, name:"Pizza", category:"Makanan", price:100000, stock:50, emoji:"🍕"},
+  {id:3, name:"Donat", category:"Makanan", price:60000, stock:60, emoji:"🍩"},
+  {id:4, name:"Kue", category:"Makanan", price:70000, stock:30, emoji:"🍰"},
+  {id:5, name:"Mie", category:"Makanan", price:95000, stock:40, emoji:"🍜"},
+  {id:6, name:"Kentang Goreng", category:"Makanan", price:70000, stock:38, emoji:"🍟"},
+  {id:7, name:"Es Krim", category:"Makanan", price:135000, stock:36, emoji:"🍦"},
+  {id:9, name:"Sandwich", category:"Makanan", price:175000, stock:32, emoji:"🥪"},
+  {id:10, name:"Ayam Goreng", category:"Makanan", price:195000, stock:30, emoji:"🍗"},
+  {id:11, name:"Es Boba", category:"Minuman", price:215000, stock:28, emoji:"🧋"},
+  {id:12, name:"Kopi", category:"Minuman", price:235000, stock:26, emoji:"☕"},
+  {id:14, name:"Jus Jeruk", category:"Minuman", price:275000, stock:22, emoji:"🍊"},
+  {id:15, name:"Susu", category:"Minuman", price:295000, stock:20, emoji:"🥛"},
+  {id:16, name:"Handphone", category:"Elektronik", price:315000, stock:18, emoji:"📱"},
+  {id:17, name:"Laptop", category:"Elektronik", price:335000, stock:16, emoji:"💻"},
+  {id:18, name:"Dompet", category:"Asesoris", price:355000, stock:12, emoji:"👛"},
+  {id:19, name:"Tas Ransel", category:"Asesoris", price:375000, stock:10, emoji:"🎒"},
+  {id:20, name:"Lampu", category:"Asesoris", price:395000, stock:66, emoji:"💡"},
+  {id:21, name:"Es Teh", category:"Minuman", price:3000, stock:60, emoji:"🧊"},
+  {id:22, name:"Es Kopi Susu", category:"Minuman", price:12000, stock:30, emoji:"🥤"}
+];
+
+// 3. Keranjang belanja
+let cart = [];
+
+// 4. Format harga Rupiah
+function formatRupiah(number) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(number);
+}
+
+// 5. Menampilkan produk
+function displayProducts() {
+  const search = document.getElementById("search").value.toLowerCase();
+  const category = document.getElementById("category").value;
+  const container = document.getElementById("products");
+
+  const filtered = products.filter(product => {
+    const matchName = product.name.toLowerCase().includes(search);
+    const matchCategory =
+      category === "Semua" || product.category === category;
+
+    return matchName && matchCategory;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = "<p>Produk tidak ditemukan.</p>";
+    return;
+  }
+
+  container.innerHTML = filtered.map(product => `
+    <div class="product-card">
+      <div class="product-image">${product.emoji}</div>
+
+      <div class="product-info">
+        <h3>${product.name}</h3>
+        <p class="category">${product.category}</p>
+        <p class="price">${formatRupiah(product.price)}</p>
+        <p class="stock">Stok: ${product.stock}</p>
+
+        <button class="add-button"
+          onclick="addToCart(${product.id})">
+          + Tambah ke Keranjang
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+// 6. Menambahkan produk ke keranjang
+function addToCart(id) {
+  const product = products.find(item => item.id === id);
+  const cartItem = cart.find(item => item.id === id);
+
+  if (!product) return;
+
+  if (cartItem) {
+    if (cartItem.quantity >= product.stock) {
+      alert("Jumlah melebihi stok yang tersedia.");
+      return;
+    }
+
+    cartItem.quantity++;
+  } else {
+    if (product.stock <= 0) {
+      alert("Stok produk habis.");
+      return;
+    }
+
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1
+    });
+  }
+
+  updateCart();
+}
+
+// 7. Mengubah jumlah produk
+function changeQuantity(id, amount) {
+  const item = cart.find(item => item.id === id);
+  const product = products.find(item => item.id === id);
+
+  if (!item || !product) return;
+
+  if (amount > 0 && item.quantity >= product.stock) {
+    alert("Jumlah melebihi stok.");
+    return;
+  }
+
+  item.quantity += amount;
+
+  if (item.quantity <= 0) {
+    cart = cart.filter(item => item.id !== id);
+  }
+
+  updateCart();
+}
+
+// 8. Menghapus produk dari keranjang
+function removeFromCart(id) {
+  cart = cart.filter(item => item.id !== id);
+  updateCart();
+}
+
+// 9. Memperbarui tampilan keranjang
+function updateCart() {
+  const container = document.getElementById("cart-items");
+
+  const count = cart.reduce(
+    (sum, item) => sum + item.quantity, 0
+  );
+
+  document.getElementById("cart-count").textContent = count;
+
+  if (cart.length === 0) {
+    container.innerHTML =
+      '<p class="empty-message">Keranjang masih kosong.</p>';
+  } else {
+    container.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div>
+          <strong>${item.name}</strong>
+          <p>${formatRupiah(item.price)} × ${item.quantity}</p>
+        </div>
+
+        <div class="cart-controls">
+          <button onclick="changeQuantity(${item.id}, -1)">−</button>
+          <span>${item.quantity}</span>
+          <button onclick="changeQuantity(${item.id}, 1)">+</button>
+
+          <button class="remove-button"
+            onclick="removeFromCart(${item.id})">
+            Hapus
+          </button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity, 0
+  );
+
+  document.getElementById("cart-total").textContent =
+    "Total: " + formatRupiah(total);
+}
+
+// 10. Membuka dan menutup keranjang
+function toggleCart() {
+  const section = document.getElementById("cart-section");
+
+  section.style.display =
+    section.style.display === "block" ? "none" : "block";
+
+  section.scrollIntoView({ behavior: "smooth" });
+}
+
+// 11. Checkout melalui WhatsApp
+function checkout() {
+  if (cart.length === 0) {
+    alert("Keranjang masih kosong.");
+    return;
+  }
+
+  let message = "Halo, saya ingin memesan:\n\n";
+
+  cart.forEach(item => {
+    message +=
+      item.name + " x " + item.quantity +
+      " = " + formatRupiah(item.price * item.quantity) + "\n";
+  });
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity, 0
+  );
+
+  message += "\nTotal: " + formatRupiah(total);
+
+  const url =
+    "https://wa.me/" + WA_ADMIN +
+    "?text=" + encodeURIComponent(message);
+
+  window.open(url, "_blank");
+}
+
+// 12. Menampilkan produk dan keranjang saat halaman dibuka
+displayProducts();
+updateCart();
+
+</script>
+
+</body>
+</html>
